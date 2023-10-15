@@ -36,10 +36,10 @@ router.route('/').get(async (req, res) => {
                 }
             }
         ]);
-        res.status(200).json({success: true, data:posts});
+        return res.status(200).json({success: true, data:posts});
     } catch(error){
         console.error(error);
-        res.status(500).json({success: false, message: error});
+        return res.status(500).json({success: false, message: error});
     }
 })
 
@@ -55,10 +55,10 @@ router.route('/').post(auth, async (req, res) => {
             prompt, 
             photo: photoUrl.url
         })
-        res.status(201).json({success: true, data: newPost});
+        return res.status(201).json({success: true, data: newPost});
     } catch(error){
         console.error(error);
-        res.status(500).json({success: false, message: error});
+        return res.status(500).json({success: false, message: error});
     }
 
 })
