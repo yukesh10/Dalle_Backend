@@ -2,6 +2,8 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import {Configuration, OpenAIApi} from 'openai';
 
+import User from '../mongodb/models/user.js';
+
 dotenv.config();
 
 const router = express.Router();
@@ -12,13 +14,17 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-router.route('/').get((req, res) => {
-    res.send('Hello from DALL-E');
-});
-
 router.route('/').post(async (req, res) => {
     try {
         const {prompt} = req.body;
+        const {authUser} = req;
+        
+        const user = await User.findOne({email: authUser.email});
+        const numOfPost = await numOfPostByUser(user.userId);
+
+        if (user.maxPost <= numOfPost){
+            return res.status(401).json({success: false, message: "User has exceeded the max post limit of " + user.maxPost})
+        }
 
         const aiResponse = await openai.createImage({
             prompt,

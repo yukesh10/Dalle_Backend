@@ -6,6 +6,8 @@ import User from '../mongodb/models/user.js';
 import Token from '../mongodb/models/token.js';
 import TokenSchema from '../mongodb/models/token.js';
 
+import {numOfPostByUser} from '../utils/utils.js';
+
 dotenv.config();
 
 const router = express.Router();
@@ -16,7 +18,7 @@ router.route("/signup").post(async(req, res) => {
 
         const existingUser = await User.findOne({email});
         if (existingUser){
-            return res.status(500).json({success: false, message: "User with this email address already exists"});
+            return res.status(409).json({success: false, message: "User with this email address already exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -69,6 +71,8 @@ router.route("/login").post(async(req, res) => {
 
         await saveTokenOnDatabase(accessToken, refreshToken, user);
 
+        const numOfPost = await numOfPostByUser(user._id);
+
         return res.status(200).json({
             success: true,
             message: "Login successful",
@@ -76,7 +80,9 @@ router.route("/login").post(async(req, res) => {
             id: user._id,
             name: user.name,
             token: accessToken,
-            refresh: refreshToken
+            refresh: refreshToken,
+            maxPost: user.maxPost,
+            currentPost: numOfPost
         })
     } catch(error){
         console.log(error);
@@ -91,7 +97,7 @@ router.route('/refresh-token').post(async(req, res)=> {
         const tokenOnDb = await TokenSchema.findOne({refreshToken, user: userId});
         if (!tokenOnDb){
             return res.status(401).json({
-                error: new Error("Invalid refresh token")
+                error: "INVALID_REFRESH_TOKEN"
             })
         }
 
@@ -100,7 +106,7 @@ router.route('/refresh-token').post(async(req, res)=> {
         const tokenExp = new Date(decodedToken.exp *1000);
         if (tokenExp < current){
             return res.status(401).json({
-                error: new Error("Token expired. Please relogin.")
+                error: "TOKEN_EXPIRED"
             })
         }
         
@@ -117,9 +123,21 @@ router.route('/refresh-token').post(async(req, res)=> {
         })
     } catch(err){
         res.status(401).json({
-            error: new Error("Invalid request")
+            error: "INVALID_REQUEST"
         })
     }
 })
+
+router.route('/logout').post(async (req, res) => {
+    const {userId} = req.body;
+    try {
+        await TokenSchema.deleteMany({user: userId});
+    } catch(err){
+        res.status(401).json({
+            error: "INVALID_REQUEST"
+        })
+    }
+
+});
 
 export default router;

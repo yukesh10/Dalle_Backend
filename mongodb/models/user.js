@@ -4,6 +4,7 @@ const UserSchema = mongoose.model('User', new mongoose.Schema({
     name: {type: String, required: [true, "Please provide your name!"]},
     email: {type: String, required: [true, "Please provide your email address!"], unique: [true, 'Email already exists']},
     password: {type: String, required: [true, "Please provide your password!"]},
+    maxPost: {type: Number, default: 5},
     createdAt: {type: Date, default: Date.now}
 }));
 

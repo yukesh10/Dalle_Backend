@@ -10,7 +10,7 @@ const auth = async (req, res, next) => {
         const tokenOnDb = await TokenSchema.findOne({token});
         if (!tokenOnDb){
             return res.status(401).json({
-                error: new Error("Invalid Token")
+                error: "INVALID_TOKEN"
             })
         }
 
@@ -19,14 +19,14 @@ const auth = async (req, res, next) => {
         const tokenExp = new Date(decodedToken.exp *1000);
         if (tokenExp < current){
             return res.status(401).json({
-                error: new Error("Token expired. Please relogin.")
+                error: "REFRESH_TOKEN_EXPIRED"
             })
         }
         req.authUser = decodedToken;
         next();
     } catch(error){
         res.status(401).json({
-            error: new Error("Invalid request")
+            error: "INVALID_REQUEST"
         })
     }
 }
