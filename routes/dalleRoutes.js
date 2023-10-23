@@ -4,6 +4,8 @@ import {Configuration, OpenAIApi} from 'openai';
 
 import User from '../mongodb/models/user.js';
 
+import {numOfPostByUser} from '../utils/utils.js'
+
 dotenv.config();
 
 const router = express.Router();
