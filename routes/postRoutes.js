@@ -52,7 +52,7 @@ router.route('/').post(auth, async (req, res) => {
         const { prompt, photo} = req.body;
         const {authUser} = req;
 
-        let numOfPost = await numOfPostByUser(auth.userId);
+        let numOfPost = await numOfPostByUser(authUser.userId);
         
         const user = await User.findOne({email: authUser.email});
 

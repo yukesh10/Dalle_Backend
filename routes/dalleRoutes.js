@@ -22,7 +22,7 @@ router.route('/').post(async (req, res) => {
         const {authUser} = req;
         
         const user = await User.findOne({email: authUser.email});
-        const numOfPost = await numOfPostByUser(user.userId);
+        const numOfPost = await numOfPostByUser(user.id);
 
         if (user.maxPost <= numOfPost){
             return res.status(401).json({success: false, message: "User has exceeded the max post limit of " + user.maxPost})

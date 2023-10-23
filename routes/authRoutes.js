@@ -71,7 +71,7 @@ router.route("/login").post(async(req, res) => {
 
         await saveTokenOnDatabase(accessToken, refreshToken, user);
 
-        const numOfPost = await numOfPostByUser(user._id);
+        const numOfPost = await numOfPostByUser(user.id);
 
         return res.status(200).json({
             success: true,
