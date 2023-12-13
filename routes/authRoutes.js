@@ -132,6 +132,10 @@ router.route('/logout').post(async (req, res) => {
     const {userId} = req.body;
     try {
         await TokenSchema.deleteMany({user: userId});
+        return res.status(200).json({
+            success: true,
+            message: "Logout Successful"
+        })
     } catch(err){
         res.status(401).json({
             error: "INVALID_REQUEST"
