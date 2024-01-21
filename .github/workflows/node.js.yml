@@ -28,5 +28,5 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: cp /home/ubuntu/dalle_clone/Dalle_Backend/.env /home/ubuntu/backend_pipeline/_work/Dalle_Backend/Dalle_Backend/
-    - run: pm2 restart dalle_backend
+    #- run: cp /home/ubuntu/dalle_clone/Dalle_Backend/.env /home/ubuntu/backend_pipeline/_work/Dalle_Backend/Dalle_Backend/
+    #- run: pm2 restart dalle_backend
