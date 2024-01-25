@@ -27,7 +27,7 @@ app.get('/', async(req, res) => {
 const startServer = async () => {
     try {
         connectDB(process.env.MONGODB_URL);
-        app.listen(process.env.PORTNO, () => console.log('Server started http://localhost:8080'))
+        app.listen(process.env.PORTNO, () => console.log(`Server started http://localhost:${process.env.PORTNO}`))
     }catch(error) {
         console.error(error);
     }
